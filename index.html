@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Kaplan Trainingsplan Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020617;
+      --card: #020617;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.2);
+      --accent-strong: rgba(79, 70, 229, 0.35);
+      --text: #f9fafb;
+      --text-soft: #9ca3af;
+      --border: rgba(148, 163, 184, 0.4);
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --shadow-soft: 0 20px 45px rgba(15, 23, 42, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #000 65%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 20px 12px 26px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 640px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.99), rgba(15, 23, 42, 0.98));
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 16px 14px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      inset: -100px;
+      background:
+        radial-gradient(circle at 0 0, rgba(79, 70, 229, 0.38), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(14, 165, 233, 0.3), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      padding: 2px;
+      background: conic-gradient(from 210deg, #4f46e5, #06b6d4, #22c55e, #f97316, #4f46e5);
+    }
+
+    .brand-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background: radial-gradient(circle at 25% 0, #1f2937 0, #020617 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .trainer-tag {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.94);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      max-width: 150px;
+    }
+
+    .trainer-tag span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .trainer-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin: 4px 2px 10px;
+    }
+
+    .form-card {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+      border-radius: var(--radius-lg);
+      padding: 10px 11px 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 10px;
+    }
+
+    @media (max-width: 520px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    select,
+    input {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text);
+      font-size: 12px;
+      padding: 7px 10px;
+      outline: none;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      padding: 8px 13px;
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.94);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: transparent;
+      color: #e5e7eb;
+      font-weight: 500;
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .btn:active,
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn span.icon {
+      font-size: 14px;
+    }
+
+    .tagline {
+      font-size: 10px;
+      color: var(--text-soft);
+      opacity: 0.9;
+    }
+
+    .output-card {
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 11px 11px 10px;
+      margin-top: 10px;
+      max-height: 430px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .output-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .output-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .output-meta {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .copy-btn {
+      font-size: 11px;
+      padding: 6px 10px;
+    }
+
+    .output-body {
+      margin-top: 4px;
+      padding-top: 5px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.3);
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+    }
+
+    .output-body::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .output-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .output-body::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+    }
+
+    .section {
+      padding: 7px 6px 7px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+      margin-bottom: 6px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .section-title {
+      font-weight: 600;
+    }
+
+    .section-time {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .exercise {
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .exercise-title {
+      font-weight: 600;
+      margin-bottom: 1px;
+    }
+
+    .exercise-details {
+      color: var(--text-soft);
+      line-height: 1.35;
+    }
+
+    .small {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .empty {
+      font-size: 11px;
+      color: var(--text-soft);
+      text-align: center;
+      padding: 12px 4px 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="glow"></div>
+    <div class="app-inner">
+      <header>
+        <div class="brand">
+          <div class="brand-logo">
+            <div class="brand-logo-inner">K</div>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">Kaplan Trainingsplan</div>
+            <div class="brand-sub">Generator für Jugendfußball</div>
+          </div>
+        </div>
+        <button class="trainer-tag" id="trainerButton" type="button">
+          <div class="trainer-dot"></div>
+          <span id="trainerNameLabel">Trainer</span>
+        </button>
+      </header>
+
+      <p class="hint">
+        Wähle Altersklasse, Dauer &amp; Schwerpunkt – die App baut dir automatisch einen strukturierten Trainingsplan (Warm-Up, Technik, Spielform, Abschlussspiel, optional Athletik).
+      </p>
+
+      <section class="form-card">
+        <div class="form-grid">
+          <div class="field">
+            <label for="ageGroup">Altersklasse</label>
+            <select id="ageGroup">
+              <option value="u8u9">U8 / U9</option>
+              <option value="u10u11">U10 / U11</option>
+              <option value="u12u13" selected>U12 / U13</option>
+              <option value="u14plus">U14 und älter</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="duration">Trainingsdauer</label>
+            <select id="duration">
+              <option value="60" selected>60 Minuten</option>
+              <option value="75">75 Minuten</option>
+              <option value="90">90 Minuten</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="focus">Schwerpunkt</label>
+            <select id="focus">
+              <option value="technik" selected>Technik &amp; Dribbling</option>
+              <option value="passspiel">Passspiel &amp; Kombination</option>
+              <option value="abschluss">Torabschluss</option>
+              <option value="spielform">Spielformen &amp; Taktik</option>
+              <option value="athletik">Athletik &amp; Koordination</option>
+              <option value="gemischt">Gemischt (Allround)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="intensity">Intensität</label>
+            <select id="intensity">
+              <option value="locker">Locker</option>
+              <option value="mittel" selected>Mittel</option>
+              <option value="hoch">Hoch</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="players">Anzahl Spieler (ca.)</label>
+            <input id="players" type="number" min="6" max="24" placeholder="z.B. 12" />
+          </div>
+
+          <div class="field">
+            <label for="note">Notiz (optional)</label>
+            <input id="note" type="text" placeholder="z.B. Vorbereitung Turnier" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="generateButton" class="btn btn-primary" type="button">
+            <span class="icon">⚽️</span>
+            <span>Trainingsplan erstellen</span>
+          </button>
+          <div class="tagline">
+            Struktur: Warm-Up · Technik · Spielform · Abschluss · (+ Athletik)
+          </div>
+        </div>
+      </section>
+
+      <section class="output-card">
+        <div class="output-header">
+          <div class="output-title-block">
+            <div class="output-title">Aktueller Plan</div>
+            <div class="output-meta" id="outputMeta">Noch kein Plan erstellt.</div>
+            <div class="chip-row" id="chipRow"></div>
+          </div>
+          <button id="copyButton" class="btn copy-btn" type="button">
+            <span class="icon">📋</span>
+            <span>Kopieren</span>
+          </button>
+        </div>
+
+        <div class="output-body" id="planOutput">
+          <div class="empty">
+            Erstelle zuerst einen Plan – dann siehst du hier die Einheiten, fein sortiert nach Minuten und Schwerpunkten.
+          </div>
+        </div>
+      </section>
+
+      <p class="small">
+        Tipp: Du kannst den kopierten Plan direkt in WhatsApp, Notizen oder Word/Excel einfügen – z.B. für Co-Trainer oder Eltern.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // --- Trainername in localStorage merken ---
+    const trainerButton = document.getElementById('trainerButton');
+    const trainerNameLabel = document.getElementById('trainerNameLabel');
+
+    function loadTrainerName() {
+      const stored = localStorage.getItem('kaplan_trainer_name');
+      trainerNameLabel.textContent = stored && stored.trim() ? stored : 'Trainer';
+    }
+
+    trainerButton.addEventListener('click', () => {
+      const current = localStorage.getItem('kaplan_trainer_name') || '';
+      const name = prompt('Wie soll ich dich im Kopf des Plans nennen?', current);
+      if (name !== null) {
+        const trimmed = name.trim();
+        if (trimmed.length > 0) {
+          localStorage.setItem('kaplan_trainer_name', trimmed);
+          trainerNameLabel.textContent = trimmed;
+        } else {
+          localStorage.removeItem('kaplan_trainer_name');
+          trainerNameLabel.textContent = 'Trainer';
+        }
+      }
+    });
+
+    loadTrainerName();
+
+    // --- "Datenbank" mit Übungen (einfach erweiterbar) ---
+    // Jede Übung: section (warmup, technik, spielform, abschluss, athletik)
+    // focusTags: ['technik','passspiel','abschluss','spielform','athletik','gemischt']
+    const DRILLS = [
+      // Warm-Up
+      {
+        section: 'warmup',
+        title: 'Lauf-ABC & Mobilisation',
+        minutes: 8,
+        focusTags: ['gemischt', 'athletik'],
+        description: 'Locker einlaufen, anschließend Kniehebelauf, Anfersen, Seitgalopp, Ausfallschritte, Armkreisen. Letzte 2 Min. mit Ball am Fuß.'
+      },
+      {
+        section: 'warmup',
+        title: 'Fangen mit Ball (Jäger & Hasen)',
+        minutes: 10,
+        focusTags: ['technik', 'gemischt'],
+        description: 'Jeder Spieler mit Ball im Feld, 1–2 Fänger ohne Ball. Fänger markieren durch Leibchen. Wer gefangen wird, macht 3 schnelle Kontakte um eine Hütcheninsel und ist wieder frei.'
+      },
+      {
+        section: 'warmup',
+        title: 'Dribbel-Slalom im Parcours',
+        minutes: 10,
+        focusTags: ['technik'],
+        description: 'Mehrere Slalomlinien mit Hütchen aufbauen. Spieler dribbeln mit vielen Kontakten, Richtungswechseln, beidfüßig. Auf Trainerkommando Richtungswechsel oder Tempoverschärfung.'
+      },
+      {
+        section: 'warmup',
+        title: 'Kettenfang mit Ball',
+        minutes: 8,
+        focusTags: ['athletik', 'gemischt'],
+        description: '2 Spieler fangen, halten sich an der Hand (Kette). Alle anderen haben Ball und versuchen auszuweichen. Gefangene werden Teil der Kette. Kurze Belastung, dann wechseln.'
+      },
+
+      // Technik / Passspiel
+      {
+        section: 'technik',
+        title: 'Coerver-Basics (1-gegen-Kegel)',
+        minutes: 12,
+        focusTags: ['technik'],
+        description: 'In 2–3 Reihen: Coerver-Moves (Innen-Außen, Sohlenzieher, Übersteiger) gegen Hütchen. Erst ohne Tempo, dann mit Richtungswechsel und Tempoverschärfung. Viele Wiederholungen, beidfüßig.'
+      },
+      {
+        section: 'technik',
+        title: 'Quadrat-Passspiel (Rondo 4v1 / 5v2)',
+        minutes: 12,
+        focusTags: ['passspiel', 'technik'],
+        description: 'Quadrate 12–15 m, außen 4–5 Spieler, innen 1–2 Verteidiger. Max. 2 Kontakte, flache Pässe, offener Körper. Punktesystem: 10 Pässe in Folge = 1 Punkt fürs Außenteam.'
+      },
+      {
+        section: 'technik',
+        title: 'Doppelpass & Tiefenlauf',
+        minutes: 10,
+        focusTags: ['passspiel', 'abschluss'],
+        description: 'Aufbau: Passgeber – Wandspieler – Tiefenläufer. Pass – Klatsch – Steilpass in die Tiefe. Tiefenläufer nimmt mit und schließt auf Minitor ab. Seiten regelmäßig wechseln.'
+      },
+      {
+        section: 'technik',
+        title: 'Torabschluss nach Dribbling',
+        minutes: 12,
+        focusTags: ['abschluss', 'technik'],
+        description: 'Spieler dribbeln aus leicht seitlicher Position Richtung Tor, machen 1 Finte (z.B. Übersteiger) und schließen mit Vollspann flach ab. Variation: Abschluss nach Auftaktbewegung in die Tiefe.'
+      },
+
+      // Spielformen
+      {
+        section: 'spielform',
+        title: '4-gegen-4 mit Zonen (Spielaufbau)',
+        minutes: 15,
+        focusTags: ['spielform', 'passspiel'],
+        description: 'Feld in 3 Zonen teilen (Aufbau – Mittelfeld – Angriff). In der ersten Phase muss der Ball durch jede Zone. Fördert Ballzirkulation und Raumaufteilung. Später Zonen freigeben.'
+      },
+      {
+        section: 'spielform',
+        title: 'Überzahlspiel 3v2 / 4v3',
+        minutes: 12,
+        focusTags: ['spielform', 'abschluss'],
+        description: 'Angreifer starten in Überzahl aus dem Mittelfeld in Richtung Tor (mit Torwart). Ziel: schnell ausspielen, kluge Entscheidung Pass/Dribbling/Abschluss. Verteidiger wechseln nach jedem Angriff.'
+      },
+      {
+        section: 'spielform',
+        title: 'Konter-Spiel 5v5 + Kontertore',
+        minutes: 15,
+        focusTags: ['spielform', 'athletik'],
+        description: 'Zwei Teams, Spielfeld länglich. Nach Ballgewinn sofort umschalten und auf 2 kleine Kontertore abschließen. Zeitlimit pro Angriff (z.B. 10 Sekunden), um Tempo hoch zu halten.'
+      },
+
+      // Abschlussspiel
+      {
+        section: 'abschluss',
+        title: 'Freies Spiel 6-gegen-6 (mit Coaching-Ziel)',
+        minutes: 18,
+        focusTags: ['gemischt', 'spielform'],
+        description: 'Normales Spiel mit klar definiertem Coaching-Ziel (z.B. „Breite halten“, „Spielverlagerung“, „Abschluss nach 3 Pässen“). Nach jeweils 6 Min. kurze Freeze-Phase und Feedback.'
+      },
+      {
+        section: 'abschluss',
+        title: 'Funino 3-gegen-3 auf 4 Tore',
+        minutes: 16,
+        focusTags: ['technik', 'abschluss'],
+        description: 'Kleine Felder, 4 Minitore. Tore zählen nur, wenn über Außenzone vorbereitet. Fördert 1-gegen-1, Mut zum Dribbling und schnelles Umschalten. Häufige Teamwechsel.'
+      },
+      {
+        section: 'abschluss',
+        title: 'Champions-League-Turnier',
+        minutes: 18,
+        focusTags: ['gemischt', 'spielform'],
+        description: '3–4 Teams à 3–5 Spieler. Kurze Spiele (z.B. 5 Min.), Sieg = 3 Punkte. Optional Bonuspunkte für Coaching-Ziele (z.B. 3 Pässe in Folge, Ballgewinn im Pressing).'
+      },
+
+      // Athletik / Koordination
+      {
+        section: 'athletik',
+        title: 'Koordinationsleiter & Hütchen-Sprints',
+        minutes: 10,
+        focusTags: ['athletik'],
+        description: 'Stationen mit Leiter (beidbeinig, einbeinig, seitlich) und kurzen Sprints (5–10 m). Belastung kurz, Pausen einbauen. Technik sauber, Qualität vor Tempo.'
+      },
+      {
+        section: 'athletik',
+        title: 'Stabi-Zirkel (Rumpf & Beine)',
+        minutes: 10,
+        focusTags: ['athletik'],
+        description: '4–5 Stationen: Unterarmstütz, Seitstütz, Kniebeugen, Ausfallschritte, Sprung-Landungen. 30–40 Sek. Belastung, 20 Sek. Pause, 2–3 Runden – altersgerecht dosieren.'
+      },
+      {
+        section: 'athletik',
+        title: 'Sprint-Wettkämpfe mit Ball',
+        minutes: 8,
+        focusTags: ['athletik', 'technik'],
+        description: '1-gegen-1 oder 2-gegen-2 Sprints mit Ball zu Minitoren oder Linien. Fokus auf saubere Antritte, Körperposition und Ballkontrolle bei Tempo.'
+      }
+    ];
+
+    function filterDrills(section, focus) {
+      return DRILLS.filter(d =>
+        d.section === section &&
+        (d.focusTags.includes(focus) || d.focusTags.includes('gemischt'))
+      );
+    }
+
+    function pickRandom(drills, count) {
+      const copy = drills.slice();
+      const chosen = [];
+      while (copy.length && chosen.length < count) {
+        const idx = Math.floor(Math.random() * copy.length);
+        chosen.push(copy.splice(idx, 1)[0]);
+      }
+      return chosen;
+    }
+
+    function buildPlanStructure(duration, focus, intensity) {
+      // Grobe Zeitaufteilung je nach Dauer (in Minuten)
+      let warmup, technik, spielform, abschluss, athletik = 0;
+
+      if (duration === 60) {
+        warmup = 10;
+        technik = 15;
+        spielform = 15;
+        abschluss = 15;
+        athletik = intensity === 'hoch' ? 5 : intensity === 'mittel' ? 5 : 0;
+      } else if (duration === 75) {
+        warmup = 12;
+        technik = 18;
+        spielform = 20;
+        abschluss = 18;
+        athletik = intensity === 'hoch' ? 7 : intensity === 'mittel' ? 5 : 0;
+      } else {
+        // 90
+        warmup = 15;
+        technik = 20;
+        spielform = 25;
+        abschluss = 20;
+        athletik = intensity === 'hoch' ? 10 : intensity === 'mittel' ? 8 : 5;
+      }
+
+      // Anzahl Übungen pro Block grob steuern
+      const plan = [];
+
+      // Warm-Up
+      plan.push({
+        key: 'warmup',
+        label: 'Warm-Up',
+        minutes: warmup,
+        drills: pickRandom(filterDrills('warmup', focus), 2)
+      });
+
+      // Technik
+      plan.push({
+        key: 'technik',
+        label: 'Technik / Schulung',
+        minutes: technik,
+        drills: pickRandom(filterDrills('technik', focus), 2)
+      });
+
+      // Spielform
+      plan.push({
+        key: 'spielform',
+        label: 'Spielformen / Anwendung',
+        minutes: spielform,
+        drills: pickRandom(filterDrills('spielform', focus), 2)
+      });
+
+      // Abschlussspiel
+      plan.push({
+        key: 'abschluss',
+        label: 'Abschlussspiel',
+        minutes: abschluss,
+        drills: pickRandom(filterDrills('abschluss', focus), 1)
+      });
+
+      if (athletik > 0) {
+        plan.push({
+          key: 'athletik',
+          label: 'Athletik / Stabi',
+          minutes: athletik,
+          drills: pickRandom(filterDrills('athletik', focus), 1)
+        });
+      }
+
+      return plan;
+    }
+
+    function formatAgeGroup(value) {
+      switch (value) {
+        case 'u8u9': return 'U8/U9';
+        case 'u10u11': return 'U10/U11';
+        case 'u12u13': return 'U12/U13';
+        case 'u14plus': return 'U14+';
+        default: return value;
+      }
+    }
+
+    function formatFocus(value) {
+      switch (value) {
+        case 'technik': return 'Technik & Dribbling';
+        case 'passspiel': return 'Passspiel & Kombination';
+        case 'abschluss': return 'Torabschluss';
+        case 'spielform': return 'Spielformen & Taktik';
+        case 'athletik': return 'Athletik & Koordination';
+        case 'gemischt': return 'Gemischt (Allround)';
+        default: return value;
+      }
+    }
+
+    function formatIntensity(value) {
+      switch (value) {
+        case 'locker': return 'locker';
+        case 'mittel': return 'mittel';
+        case 'hoch': return 'hoch';
+        default: return value;
+      }
+    }
+
+    const generateButton = document.getElementById('generateButton');
+    const copyButton = document.getElementById('copyButton');
+    const planOutput = document.getElementById('planOutput');
+    const outputMeta = document.getElementById('outputMeta');
+    const chipRow = document.getElementById('chipRow');
+
+    let lastPlanText = '';
+
+    function buildTextPlan(meta, blocks) {
+      const lines = [];
+      lines.push(`Trainingsplan – ${meta.date}`);
+      lines.push(`Altersklasse: ${meta.ageGroup}`);
+      lines.push(`Dauer: ${meta.duration} Min · Schwerpunkt: ${meta.focus} · Intensität: ${meta.intensity}`);
+      if (meta.players) lines.push(`Spieler: ca. ${meta.players}`);
+      if (meta.note) lines.push(`Hinweis: ${meta.note}`);
+      if (meta.trainer) lines.push(`Trainer: ${meta.trainer}`);
+      lines.push('');
+      blocks.forEach((b, idx) => {
+        lines.push(`${idx + 1}. ${b.label} (${b.minutes} Min)`);
+        b.drills.forEach((d, i) => {
+          lines.push(`   ${String.fromCharCode(97 + i)}) ${d.title}`);
+          lines.push(`      ${d.description}`);
+        });
+        lines.push('');
+      });
+      return lines.join('\n');
+    }
+
+    function renderPlan(meta, blocks) {
+      if (!blocks || !blocks.length) {
+        planOutput.innerHTML = '<div class="empty">Es ist ein Fehler beim Generieren des Plans aufgetreten.</div>';
+        return;
+      }
+
+      // Meta
+      outputMeta.textContent =
+        `${meta.date} · ${meta.ageGroup} · ${meta.duration} Min · ${meta.focus}`;
+      chipRow.innerHTML = '';
+
+      const chip1 = document.createElement('span');
+      chip1.className = 'chip';
+      chip1.textContent = `Intensität: ${meta.intensity}`;
+      chipRow.appendChild(chip1);
+
+      if (meta.players) {
+        const chip2 = document.createElement('span');
+        chip2.className = 'chip';
+        chip2.textContent = `Spieler: ~${meta.players}`;
+        chipRow.appendChild(chip2);
+      }
+
+      if (meta.note) {
+        const chip3 = document.createElement('span');
+        chip3.className = 'chip';
+        chip3.textContent = meta.note;
+        chipRow.appendChild(chip3);
+      }
+
+      // Body
+      planOutput.innerHTML = '';
+      blocks.forEach(block => {
+        const section = document.createElement('div');
+        section.className = 'section';
+
+        const header = document.createElement('div');
+        header.className = 'section-header';
+
+        const title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = block.label;
+
+        const time = document.createElement('div');
+        time.className = 'section-time';
+        time.textContent = `${block.minutes} Min`;
+
+        header.appendChild(title);
+        header.appendChild(time);
+        section.appendChild(header);
+
+        block.drills.forEach(drill => {
+          const ex = document.createElement('div');
+          ex.className = 'exercise';
+
+          const exTitle = document.createElement('div');
+          exTitle.className = 'exercise-title';
+          exTitle.textContent = drill.title;
+
+          const exDetails = document.createElement('div');
+          exDetails.className = 'exercise-details';
+          exDetails.textContent = drill.description;
+
+          ex.appendChild(exTitle);
+          ex.appendChild(exDetails);
+          section.appendChild(ex);
+        });
+
+        planOutput.appendChild(section);
+      });
+
+      lastPlanText = buildTextPlan(meta, blocks);
+    }
+
+    generateButton.addEventListener('click', () => {
+      const ageGroup = document.getElementById('ageGroup').value;
+      const duration = parseInt(document.getElementById('duration').value, 10);
+      const focus = document.getElementById('focus').value;
+      const intensity = document.getElementById('intensity').value;
+      const players = document.getElementById('players').value.trim();
+      const note = document.getElementById('note').value.trim();
+      const trainer = localStorage.getItem('kaplan_trainer_name') || '';
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('de-DE', {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+
+      const meta = {
+        date: dateStr,
+        ageGroup: formatAgeGroup(ageGroup),
+        duration,
+        focus: formatFocus(focus),
+        intensity: formatIntensity(intensity),
+        players: players || '',
+        note: note || '',
+        trainer: trainer || ''
+      };
+
+      const blocks = buildPlanStructure(duration, focus, intensity);
+      renderPlan(meta, blocks);
+    });
+
+    copyButton.addEventListener('click', async () => {
+      if (!lastPlanText) {
+        alert('Bitte erst einen Trainingsplan erstellen.');
+        return;
+      }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(lastPlanText);
+          alert('Trainingsplan in die Zwischenablage kopiert. Du kannst ihn jetzt in WhatsApp, Notizen, Word etc. einfügen.');
+        } else {
+          // Fallback: Text markieren
+          const temp = document.createElement('textarea');
+          temp.value = lastPlanText;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+          alert('Trainingsplan kopiert.');
+        }
+      } catch (e) {
+        alert('Kopieren nicht möglich – bitte Text manuell markieren und kopieren.');
+      }
+    });
+  </script>
+</body>
+</html>
