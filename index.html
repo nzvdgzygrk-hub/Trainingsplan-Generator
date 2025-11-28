@@ -544,8 +544,6 @@
     });
 
     // --- Übungs-"Datenbank" mit direktem easy2coach-Link (e2cUrl) ---
-    // section: warmup | technik | spielform | abschluss | athletik
-    // focusTags: technik, passspiel, abschluss, spielform, athletik, gemischt
     const DRILLS = [
       // WARM-UP
       {
@@ -720,7 +718,6 @@
 
     function getE2CUrlForDrill(drill) {
       if (drill.e2cUrl) return drill.e2cUrl;
-      // Fallback: allgemeine Übungsdatenbank
       return "https://www.easy2coach.net/de/fussball-uebungsdatenbank_pre.html";
     }
 
@@ -741,7 +738,6 @@
       return chosen;
     }
 
-    // Zeitaufteilung & Blöcke
     function buildPlanStructure(duration, focus, intensity) {
       let warmup, technik, spielform, abschluss, athletik = 0;
       duration = Number(duration);
@@ -922,9 +918,16 @@
           const link = document.createElement("a");
           link.className = "exercise-link";
           link.href = url;
-          link.target = "_blank";
-          link.rel = "noopener";
           link.innerHTML = '<span class="icon">🖼️</span><span>Übung auf easy2coach</span>';
+
+          // wichtig: immer in neuem Tab/Fenster öffnen
+          link.setAttribute("target", "_blank");
+          link.setAttribute("rel", "noopener noreferrer");
+
+          link.addEventListener("click", function(e) {
+            e.preventDefault();
+            window.open(url, "_blank", "noopener");
+          });
 
           const src = document.createElement("span");
           src.className = "exercise-source";
