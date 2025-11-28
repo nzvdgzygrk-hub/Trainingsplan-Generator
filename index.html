@@ -430,7 +430,7 @@
       </header>
 
       <p class="hint">
-        Du wählst oben ein – der Plan erstellt automatisch Übungen. Unter jeder Übung kannst du passende Varianten mit Bildern direkt auf easy2coach öffnen.
+        Du wählst oben – der Generator erstellt komplette Übungen. Unter jeder Übung: Button direkt zu easy2coach mit Bild/Grafik.
       </p>
 
       <section class="form-card">
@@ -511,7 +511,9 @@
         </div>
       </section>
 
-      <p class="small">Hinweis: easy2coach-Links öffnen die Übungsdatenbank mit Bildern/Grafiken. Die Beschreibungen hier sind deine Basisübungen.</p>
+      <p class="small">
+        Hinweis: easy2coach-Links öffnen die jeweilige Übung mit Grafik/Details. Falls Login nötig: kurz anmelden, du bleibst auf der Übung.
+      </p>
     </div>
   </div>
 
@@ -541,147 +543,187 @@
       }
     });
 
-    // --- "Datenbank" der Übungen (von mir formuliert, nicht aus e2c kopiert) ---
+    // --- Übungs-"Datenbank" mit direktem easy2coach-Link (e2cUrl) ---
     // section: warmup | technik | spielform | abschluss | athletik
     // focusTags: technik, passspiel, abschluss, spielform, athletik, gemischt
     const DRILLS = [
-      // Warm-Up
+      // WARM-UP
       {
         section: "warmup",
-        title: "Lauf-ABC mit Ball",
-        minutes: 8,
-        focusTags: ["gemischt", "athletik"],
-        description: "Locker einlaufen, dann Kniehebelauf, Anfersen, Seitgalopp – jeweils zuerst ohne, dann mit Ball am Fuß. Letzte 2 Minuten freies Dribbling mit Tempowechsel."
-      },
-      {
-        section: "warmup",
-        title: "Fangen mit Ball (Jäger & Hasen)",
+        title: "LAUFTECHNIKEN MIT UND OHNE BALL",
         minutes: 10,
-        focusTags: ["technik", "gemischt"],
-        description: "Alle bis auf 1–2 Spieler haben einen Ball. Die Fänger ohne Ball versuchen abzuschlagen. Nach Abschlag 5 schnelle Kontakte um ein Hütchen und weiter geht’s. Häufige Rollenwechsel."
-      },
-      {
-        section: "warmup",
-        title: "Dribbel-Slalom",
-        minutes: 10,
-        focusTags: ["technik"],
-        description: "Slalomlinien mit Hütchen aufbauen. Viele Ballkontakte, beide Füße, Richtungswechsel, auf Kommando Sprint durch. Perfekt für 6–14 Spieler in kleinen Gruppen."
-      },
-      {
-        section: "warmup",
-        title: "Kettenfangen",
-        minutes: 8,
         focusTags: ["athletik", "gemischt"],
-        description: "Zwei Fänger bilden eine Kette (Hand in Hand). Wird ein Spieler gefangen, schließt er sich an. Sehr aktiv, kurze Runden, ideal als Einstieg."
-      },
-
-      // Technik / Passspiel / Abschluss
-      {
-        section: "technik",
-        title: "Coerver-Ballkontrolle",
-        minutes: 12,
-        focusTags: ["technik"],
-        description: "In Reihen oder kleinen Gruppen: Innen-Außen, Sohlenzieher, Übersteiger, Richtungswechsel. Viele Wiederholungen, beidfüßig, nach und nach Tempo steigern."
+        description: "Lauf-ABC mit und ohne Ball: verschiedene Lauftechniken zur Vorbereitung auf die Einheit.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/lauftechniken-mit-ohne-ball-zur-verbesserung-der-beweglichkeit-schnelligkeit/"
       },
       {
-        section: "technik",
-        title: "Rondo 4v1 / 5v2",
-        minutes: 12,
-        focusTags: ["passspiel", "technik"],
-        description: "Quadrat mit 4–5 Spielern außen, 1–2 Spielern in der Mitte. Max. 2 Kontakte, flache Pässe, offener Körper. 10 Pässe in Folge = 1 Punkt."
-      },
-      {
-        section: "technik",
-        title: "Doppelpass & Tiefenlauf",
+        section: "warmup",
+        title: "AUSDAUERPARCOURS MIT BALL",
         minutes: 10,
-        focusTags: ["passspiel", "abschluss"],
-        description: "Passgeber spielt Wandpass, erhält den Ball klatsch zurück und steckt in die Tiefe durch. Der Tiefenläufer nimmt mit und schließt auf Minitor oder Großtor ab."
+        focusTags: ["athletik", "gemischt"],
+        description: "Parcours mit Dribbling, Koordination und kurzen Sprints. Ideal zum Reinkommen mit Ball.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-ausdauer-parcours-mit-ball.html"
+      },
+      {
+        section: "warmup",
+        title: "DRIBBLING PARCOURS WETTBEWERB",
+        minutes: 8,
+        focusTags: ["technik", "gemischt"],
+        description: "Zwei Parcours gegeneinander: Dribbling, Richtungswechsel, kleines Wettrennen im Wettbewerb.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/dribbling-parcours-wettbewerb/"
+      },
+
+      // TECHNIK / PASS / ABSCHLUSS
+      {
+        section: "technik",
+        title: "DRIBBLING-KOORDINATIONS-PARCOURS",
+        minutes: 12,
+        focusTags: ["technik", "athletik"],
+        description: "Dribbel-Parcours mit koordinativen Aufgaben: Finten, Richtungswechsel, Tempowechsel.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-dribbling-koordinations-parcours.html"
       },
       {
         section: "technik",
-        title: "Abschluss nach Dribbling",
+        title: "4ER TANNENBAUM DRIBBELN MIT FINTEN",
+        minutes: 10,
+        focusTags: ["technik"],
+        description: "Dribbling im Tannenbaum-Aufbau, an jedem Hütchen unterschiedliche Finte einsetzen.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-4er-tannenbaumdribbelnmitfinten.html"
+      },
+      {
+        section: "technik",
+        title: "DRIBBLING TRAINING II",
+        minutes: 10,
+        focusTags: ["technik"],
+        description: "Dribbling durch Hütchen mit unterschiedlichen Schrittfrequenzen und optional Torabschluss.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-dribblingtrainingfuball.html"
+      },
+      {
+        section: "technik",
+        title: "DRIBBELN, PASSEN, SCHIESSEN ALS PARCOURS",
         minutes: 12,
-        focusTags: ["abschluss", "technik"],
-        description: "Spieler dribbeln von leicht seitlicher Position Richtung Tor, machen vor dem Abschluss eine Finte (z.B. Übersteiger) und schließen mit Vollspann ab."
+        focusTags: ["technik", "passspiel", "abschluss"],
+        description: "Abwechslungsreicher Parcours: Dribbling, Passfolgen und Abschluss in einer Kombination.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-dribbeln-passen-schiessen.html"
+      },
+      {
+        section: "technik",
+        title: "PASS- UND TORSCHUSS-RUNDLAUF",
+        minutes: 12,
+        focusTags: ["passspiel", "abschluss"],
+        description: "Rundlauf mit mehreren Pass- und Torschussstationen, alle Positionen werden gewechselt.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-pass-undtorschuss-rundlauf.html"
+      },
+      {
+        section: "technik",
+        title: "PASSEN, TORSCHUSS UND FLANKEN",
+        minutes: 12,
+        focusTags: ["passspiel", "abschluss"],
+        description: "Kombination aus Flanken, Pässen und Abschluss – ideal für Außenspieler und Stürmer.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/passen-torschuss-und-flanken/"
+      },
+      {
+        section: "technik",
+        title: "PASSSPIEL MIT LAUFWEGEN UND TORABSCHLUSS",
+        minutes: 12,
+        focusTags: ["passspiel", "abschluss"],
+        description: "Komplexere Passfolge mit einstudierten Laufwegen und Abschluss auf das Tor.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/passpielundtorabschluss/"
       },
 
-      // Spielformen
+      // SPIELFORMEN / WETTKAMPF
       {
         section: "spielform",
-        title: "4-gegen-4 mit Zonen",
+        title: "SPIELFORM 4 GEGEN 4 MIT DRIBBELTOREN",
         minutes: 15,
-        focusTags: ["spielform", "passspiel"],
-        description: "Feld in 3 Zonen (Aufbau – Mitte – Angriff) teilen. In Phase 1 muss der Ball jede Zone durchlaufen. Fördert Raumaufteilung und Spielaufbau."
+        focusTags: ["spielform", "technik"],
+        description: "4-gegen-4 auf Dribbeltore: Punkt gibt es nur, wenn ins Ziel gedribbelt wird.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-spielform4gegen4durchhtchentoredribbeln.html"
       },
       {
         section: "spielform",
-        title: "Überzahlspiel 3v2 / 4v3",
-        minutes: 12,
-        focusTags: ["spielform", "abschluss"],
-        description: "Angreifer starten aus dem Mittelfeld in Überzahl auf das Tor. Nach Ballgewinn oder Abschluss nächster Angriff. Fokus: schnelles Ausspielen der Überzahl."
-      },
-      {
-        section: "spielform",
-        title: "Konterspiel mit Kontertoren",
+        title: "PRESSING WETTLAUF",
         minutes: 15,
         focusTags: ["spielform", "athletik"],
-        description: "Zwei Teams, Spielfeld lang. Nach Ballgewinn sofort in die andere Richtung kontern, auf Minitore abschließen. Zeitlimit pro Angriff, um Tempo hochzuhalten."
+        description: "Spielform mit mehreren Feldern, bei der Pressing und Umschalten im Mittelpunkt stehen.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-fangspielpressingwettlauf.html"
+      },
+      {
+        section: "spielform",
+        title: "1 GEGEN 1 NACH AKTIVIERUNG – DRIBBLING",
+        minutes: 12,
+        focusTags: ["spielform", "technik"],
+        description: "Nach einem Aktivierungslauf gehen zwei Spieler ins 1-gegen-1 auf Minitore.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-1gegen1nachaktivierung-dribbling.html"
+      },
+      {
+        section: "spielform",
+        title: "1 GEGEN 1 WETTBEWERB",
+        minutes: 12,
+        focusTags: ["spielform", "technik", "abschluss"],
+        description: "Viele kurze 1-gegen-1-Duelle, am Ende kleiner Wettbewerb mit Punktesystem.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/1-gegen-1-wettbewerb/"
       },
 
-      // Abschlussspiel
+      // ABSCHLUSS / TORSCHUSS
       {
         section: "abschluss",
-        title: "Freies Spiel mit Coaching-Ziel",
-        minutes: 18,
-        focusTags: ["gemischt", "spielform"],
-        description: "Normales Spiel (z.B. 6v6) mit klarem Coaching-Ziel: z.B. Breite halten, Spielverlagerung oder mutig abschließen. Nach 5–6 Minuten kurzes Feedback."
+        title: "PARCOURS MIT 3 TORSCHÜSSEN",
+        minutes: 15,
+        focusTags: ["abschluss", "technik"],
+        description: "Mehrere Stationen, an denen jeweils ein Torabschluss vorbereitet und abgeschlossen wird.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/torschuss-parcours/"
       },
       {
         section: "abschluss",
-        title: "Funino 3-gegen-3 auf 4 Tore",
-        minutes: 16,
-        focusTags: ["technik", "abschluss"],
-        description: "Kleine Felder mit 4 Minitoren. Tore zählen nur nach Angriff über die Außen. Fördert 1v1, Entscheidungsverhalten und schnelles Umschalten."
+        title: "KOORDINATIONSPARCOURS MIT 2 TORSCHÜSSEN",
+        minutes: 15,
+        focusTags: ["abschluss", "athletik"],
+        description: "Koordinative Aufgaben mit zwei Torabschlüssen innerhalb eines Parcours.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-technik-undtorschussparcourauf2tore.html"
       },
       {
         section: "abschluss",
-        title: "Mini-Turnier (Champions League)",
-        minutes: 18,
-        focusTags: ["gemischt", "spielform"],
-        description: "3–4 Teams à 3–5 Spieler. Kurze Spiele (z.B. 5 Minuten), Punkte zählen. Ideal, um am Ende Wettkampfcharakter reinzubringen."
+        title: "DRIBBELN, PASSEN, SCHIESSEN – SPIELNAH",
+        minutes: 15,
+        focusTags: ["abschluss", "passspiel"],
+        description: "Spielnahe Kombinationen mit finalem Abschluss aufs Tor nach Passfolgen.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-dribbeln-passen-schiessen.html"
       },
 
-      // Athletik
+      // ATHLETIK / STABI
       {
         section: "athletik",
-        title: "Koordinationsleiter + Sprints",
+        title: "KOORDINATIONSZIRKEL",
         minutes: 10,
         focusTags: ["athletik"],
-        description: "Stationen mit Leiter (beidbeinig, einbeinig, seitlich) und kurzen Sprints. Technik sauber, Pausen zwischen den Läufen, lieber Qualität als reine Menge."
+        description: "Mehrere Stationen für Sprünge, Stabi und Koordination mit und ohne Ball.",
+        e2cUrl: "https://www.easy2coach.net/de/fussballuebungen/fussballtraining-koordinationszirkel.html"
       },
       {
         section: "athletik",
-        title: "Stabi-Zirkel",
+        title: "STATIONSTRAINING TECHNIK UND AUSDAUER",
         minutes: 10,
-        focusTags: ["athletik"],
-        description: "4–5 Stationen: Unterarmstütz, Seitstütz, Kniebeugen, Ausfallschritte, Sprung-Landungen. 30–40 Sek. Belastung, 20 Sek. Pause."
-      },
-      {
-        section: "athletik",
-        title: "Sprintduelle mit Ball",
-        minutes: 8,
         focusTags: ["athletik", "technik"],
-        description: "1v1 oder 2v2 Sprint mit Ball auf Minitore oder Linien. Wer zuerst abschließt, bekommt den Punkt. Ideal am Ende einer Technikphase."
+        description: "Stationen mit technischen Aufgaben und ausdauernder Belastung im Wechsel.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/stationstraining-technik-und-ausdauer/"
+      },
+      {
+        section: "athletik",
+        title: "TECHNIK-KONDITIONS-PARCOURS",
+        minutes: 10,
+        focusTags: ["athletik", "technik"],
+        description: "Parcours, der technisches Arbeiten mit konditionellen Aufgaben verbindet.",
+        e2cUrl: "https://www.easy2coach.net/knowledge-base/blog/uebung-der-woche/technik-konditions-parcours/"
       }
     ];
 
     function getE2CUrlForDrill(drill) {
-      // einfache, allgemeine Links zur e2c-Übungsdatenbank
-      // (du kannst später selbst feinere Filter-/Such-URLS einsetzen)
+      if (drill.e2cUrl) return drill.e2cUrl;
+      // Fallback: allgemeine Übungsdatenbank
       return "https://www.easy2coach.net/de/fussball-uebungsdatenbank_pre.html";
     }
 
-    // Filtert Übungen passend zur Sektion und Schwerpunkt
     function filterDrills(section, focus) {
       return DRILLS.filter(d =>
         d.section === section &&
@@ -699,10 +741,9 @@
       return chosen;
     }
 
-    // Zeitaufteilung & welche Blöcke
+    // Zeitaufteilung & Blöcke
     function buildPlanStructure(duration, focus, intensity) {
       let warmup, technik, spielform, abschluss, athletik = 0;
-
       duration = Number(duration);
 
       if (duration === 60) {
@@ -741,9 +782,9 @@
 
       blocks.push({
         key: "abschluss",
-        label: "Abschlussspiel",
+        label: "Abschlussspiel / Torschuss",
         minutes: abschluss,
-        drills: pickRandom(filterDrills("abschluss", focus), 1)
+        drills: pickRandom(filterDrills("abschluss", focus), 2)
       });
 
       if (athletik > 0) {
@@ -800,11 +841,12 @@
         b.drills.forEach((d,j)=>{
           lines.push(`   ${String.fromCharCode(97 + j)}) ${d.title}`);
           lines.push(`      ${d.description}`);
+          if (d.e2cUrl) {
+            lines.push(`      easy2coach: ${d.e2cUrl}`);
+          }
         });
         lines.push("");
       });
-
-      lines.push("Weitere Varianten mit Bildern/Grafiken: easy2coach Übungsdatenbank (https://www.easy2coach.net/de/fussball-uebungsdatenbank_pre.html)");
 
       return lines.join("\n");
     }
@@ -882,11 +924,11 @@
           link.href = url;
           link.target = "_blank";
           link.rel = "noopener";
-          link.innerHTML = '<span class="icon">🖼️</span><span>Übungen auf easy2coach</span>';
+          link.innerHTML = '<span class="icon">🖼️</span><span>Übung auf easy2coach</span>';
 
           const src = document.createElement("span");
           src.className = "exercise-source";
-          src.textContent = "Öffnet die easy2coach-Übungsdatenbank mit passenden Übungen.";
+          src.textContent = "Öffnet die Übung in easy2coach (mit Grafik/Details).";
 
           footer.appendChild(link);
           footer.appendChild(src);
