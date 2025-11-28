@@ -313,6 +313,19 @@
       scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
     }
 
+    .output-body::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .output-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .output-body::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+    }
+
     .section {
       padding: 7px 6px;
       border-radius: var(--radius-md);
@@ -417,8 +430,7 @@
       </header>
 
       <p class="hint">
-        Wähle Altersklasse, Dauer &amp; Schwerpunkt – der Plan erstellt NUR die Struktur.  
-        Die Übungen holst du direkt über easy2coach (mit Bildern).
+        Du wählst oben ein – der Plan erstellt automatisch Übungen. Unter jeder Übung kannst du passende Varianten mit Bildern direkt auf easy2coach öffnen.
       </p>
 
       <section class="form-card">
@@ -445,7 +457,7 @@
           <div class="field">
             <label>Schwerpunkt</label>
             <select id="focus">
-              <option value="technik">Technik & Dribbling</option>
+              <option value="technik" selected>Technik & Dribbling</option>
               <option value="passspiel">Passspiel & Kombination</option>
               <option value="abschluss">Torabschluss</option>
               <option value="spielform">Spielformen & Taktik</option>
@@ -478,7 +490,7 @@
           <button id="generateButton" class="btn btn-primary">
             <span class="icon">⚽️</span>Plan erstellen
           </button>
-          <div class="tagline">Struktur: Warm-Up · Technik · Spielform · Abschluss · Athletik</div>
+          <div class="tagline">Struktur: Warm-Up · Technik · Spielform · Abschluss · (+ Athletik)</div>
         </div>
       </section>
 
@@ -499,12 +511,12 @@
         </div>
       </section>
 
-      <p class="small">Die Übungen öffnest du direkt über easy2coach.</p>
+      <p class="small">Hinweis: easy2coach-Links öffnen die Übungsdatenbank mit Bildern/Grafiken. Die Beschreibungen hier sind deine Basisübungen.</p>
     </div>
   </div>
 
   <script>
-    // Trainername speichern
+    // --- Trainername speichern ---
     const trainerButton = document.getElementById("trainerButton");
     const trainerNameLabel = document.getElementById("trainerNameLabel");
 
@@ -529,60 +541,248 @@
       }
     });
 
-    // e2c Links
-    function getE2CUrl(focus) {
-      if (focus === "gemischt") {
-        return "https://www.easy2coach.net/knowledge-base/blog/allgemein/gratis-fussballtraining-fussballuebungen/";
+    // --- "Datenbank" der Übungen (von mir formuliert, nicht aus e2c kopiert) ---
+    // section: warmup | technik | spielform | abschluss | athletik
+    // focusTags: technik, passspiel, abschluss, spielform, athletik, gemischt
+    const DRILLS = [
+      // Warm-Up
+      {
+        section: "warmup",
+        title: "Lauf-ABC mit Ball",
+        minutes: 8,
+        focusTags: ["gemischt", "athletik"],
+        description: "Locker einlaufen, dann Kniehebelauf, Anfersen, Seitgalopp – jeweils zuerst ohne, dann mit Ball am Fuß. Letzte 2 Minuten freies Dribbling mit Tempowechsel."
+      },
+      {
+        section: "warmup",
+        title: "Fangen mit Ball (Jäger & Hasen)",
+        minutes: 10,
+        focusTags: ["technik", "gemischt"],
+        description: "Alle bis auf 1–2 Spieler haben einen Ball. Die Fänger ohne Ball versuchen abzuschlagen. Nach Abschlag 5 schnelle Kontakte um ein Hütchen und weiter geht’s. Häufige Rollenwechsel."
+      },
+      {
+        section: "warmup",
+        title: "Dribbel-Slalom",
+        minutes: 10,
+        focusTags: ["technik"],
+        description: "Slalomlinien mit Hütchen aufbauen. Viele Ballkontakte, beide Füße, Richtungswechsel, auf Kommando Sprint durch. Perfekt für 6–14 Spieler in kleinen Gruppen."
+      },
+      {
+        section: "warmup",
+        title: "Kettenfangen",
+        minutes: 8,
+        focusTags: ["athletik", "gemischt"],
+        description: "Zwei Fänger bilden eine Kette (Hand in Hand). Wird ein Spieler gefangen, schließt er sich an. Sehr aktiv, kurze Runden, ideal als Einstieg."
+      },
+
+      // Technik / Passspiel / Abschluss
+      {
+        section: "technik",
+        title: "Coerver-Ballkontrolle",
+        minutes: 12,
+        focusTags: ["technik"],
+        description: "In Reihen oder kleinen Gruppen: Innen-Außen, Sohlenzieher, Übersteiger, Richtungswechsel. Viele Wiederholungen, beidfüßig, nach und nach Tempo steigern."
+      },
+      {
+        section: "technik",
+        title: "Rondo 4v1 / 5v2",
+        minutes: 12,
+        focusTags: ["passspiel", "technik"],
+        description: "Quadrat mit 4–5 Spielern außen, 1–2 Spielern in der Mitte. Max. 2 Kontakte, flache Pässe, offener Körper. 10 Pässe in Folge = 1 Punkt."
+      },
+      {
+        section: "technik",
+        title: "Doppelpass & Tiefenlauf",
+        minutes: 10,
+        focusTags: ["passspiel", "abschluss"],
+        description: "Passgeber spielt Wandpass, erhält den Ball klatsch zurück und steckt in die Tiefe durch. Der Tiefenläufer nimmt mit und schließt auf Minitor oder Großtor ab."
+      },
+      {
+        section: "technik",
+        title: "Abschluss nach Dribbling",
+        minutes: 12,
+        focusTags: ["abschluss", "technik"],
+        description: "Spieler dribbeln von leicht seitlicher Position Richtung Tor, machen vor dem Abschluss eine Finte (z.B. Übersteiger) und schließen mit Vollspann ab."
+      },
+
+      // Spielformen
+      {
+        section: "spielform",
+        title: "4-gegen-4 mit Zonen",
+        minutes: 15,
+        focusTags: ["spielform", "passspiel"],
+        description: "Feld in 3 Zonen (Aufbau – Mitte – Angriff) teilen. In Phase 1 muss der Ball jede Zone durchlaufen. Fördert Raumaufteilung und Spielaufbau."
+      },
+      {
+        section: "spielform",
+        title: "Überzahlspiel 3v2 / 4v3",
+        minutes: 12,
+        focusTags: ["spielform", "abschluss"],
+        description: "Angreifer starten aus dem Mittelfeld in Überzahl auf das Tor. Nach Ballgewinn oder Abschluss nächster Angriff. Fokus: schnelles Ausspielen der Überzahl."
+      },
+      {
+        section: "spielform",
+        title: "Konterspiel mit Kontertoren",
+        minutes: 15,
+        focusTags: ["spielform", "athletik"],
+        description: "Zwei Teams, Spielfeld lang. Nach Ballgewinn sofort in die andere Richtung kontern, auf Minitore abschließen. Zeitlimit pro Angriff, um Tempo hochzuhalten."
+      },
+
+      // Abschlussspiel
+      {
+        section: "abschluss",
+        title: "Freies Spiel mit Coaching-Ziel",
+        minutes: 18,
+        focusTags: ["gemischt", "spielform"],
+        description: "Normales Spiel (z.B. 6v6) mit klarem Coaching-Ziel: z.B. Breite halten, Spielverlagerung oder mutig abschließen. Nach 5–6 Minuten kurzes Feedback."
+      },
+      {
+        section: "abschluss",
+        title: "Funino 3-gegen-3 auf 4 Tore",
+        minutes: 16,
+        focusTags: ["technik", "abschluss"],
+        description: "Kleine Felder mit 4 Minitoren. Tore zählen nur nach Angriff über die Außen. Fördert 1v1, Entscheidungsverhalten und schnelles Umschalten."
+      },
+      {
+        section: "abschluss",
+        title: "Mini-Turnier (Champions League)",
+        minutes: 18,
+        focusTags: ["gemischt", "spielform"],
+        description: "3–4 Teams à 3–5 Spieler. Kurze Spiele (z.B. 5 Minuten), Punkte zählen. Ideal, um am Ende Wettkampfcharakter reinzubringen."
+      },
+
+      // Athletik
+      {
+        section: "athletik",
+        title: "Koordinationsleiter + Sprints",
+        minutes: 10,
+        focusTags: ["athletik"],
+        description: "Stationen mit Leiter (beidbeinig, einbeinig, seitlich) und kurzen Sprints. Technik sauber, Pausen zwischen den Läufen, lieber Qualität als reine Menge."
+      },
+      {
+        section: "athletik",
+        title: "Stabi-Zirkel",
+        minutes: 10,
+        focusTags: ["athletik"],
+        description: "4–5 Stationen: Unterarmstütz, Seitstütz, Kniebeugen, Ausfallschritte, Sprung-Landungen. 30–40 Sek. Belastung, 20 Sek. Pause."
+      },
+      {
+        section: "athletik",
+        title: "Sprintduelle mit Ball",
+        minutes: 8,
+        focusTags: ["athletik", "technik"],
+        description: "1v1 oder 2v2 Sprint mit Ball auf Minitore oder Linien. Wer zuerst abschließt, bekommt den Punkt. Ideal am Ende einer Technikphase."
       }
+    ];
+
+    function getE2CUrlForDrill(drill) {
+      // einfache, allgemeine Links zur e2c-Übungsdatenbank
+      // (du kannst später selbst feinere Filter-/Such-URLS einsetzen)
       return "https://www.easy2coach.net/de/fussball-uebungsdatenbank_pre.html";
     }
 
-    // Struktur
+    // Filtert Übungen passend zur Sektion und Schwerpunkt
+    function filterDrills(section, focus) {
+      return DRILLS.filter(d =>
+        d.section === section &&
+        (d.focusTags.includes(focus) || d.focusTags.includes("gemischt"))
+      );
+    }
+
+    function pickRandom(drills, count) {
+      const copy = drills.slice();
+      const chosen = [];
+      while (copy.length && chosen.length < count) {
+        const idx = Math.floor(Math.random() * copy.length);
+        chosen.push(copy.splice(idx, 1)[0]);
+      }
+      return chosen;
+    }
+
+    // Zeitaufteilung & welche Blöcke
     function buildPlanStructure(duration, focus, intensity) {
       let warmup, technik, spielform, abschluss, athletik = 0;
 
-      if (duration == 60) {
+      duration = Number(duration);
+
+      if (duration === 60) {
         warmup = 10; technik = 15; spielform = 15; abschluss = 15;
         athletik = intensity === "hoch" ? 5 : intensity === "mittel" ? 5 : 0;
-      } else if (duration == 75) {
+      } else if (duration === 75) {
         warmup = 12; technik = 18; spielform = 20; abschluss = 18;
-        athletik = intensity === "hoch" ? 7 : 5;
+        athletik = intensity === "hoch" ? 7 : intensity === "mittel" ? 5 : 0;
       } else {
         warmup = 15; technik = 20; spielform = 25; abschluss = 20;
-        athletik = intensity === "hoch" ? 10 : 8;
+        athletik = intensity === "hoch" ? 10 : intensity === "mittel" ? 8 : 5;
       }
 
-      const blocks = [
-        { key: "warmup", label: "Warm-Up", minutes: warmup },
-        { key: "technik", label: "Technik", minutes: technik },
-        { key: "spielform", label: "Spielformen", minutes: spielform },
-        { key: "abschluss", label: "Abschlussspiel", minutes: abschluss },
-      ];
+      const blocks = [];
+
+      blocks.push({
+        key: "warmup",
+        label: "Warm-Up",
+        minutes: warmup,
+        drills: pickRandom(filterDrills("warmup", focus), 2)
+      });
+
+      blocks.push({
+        key: "technik",
+        label: "Technik / Schulung",
+        minutes: technik,
+        drills: pickRandom(filterDrills("technik", focus), 2)
+      });
+
+      blocks.push({
+        key: "spielform",
+        label: "Spielformen / Anwendung",
+        minutes: spielform,
+        drills: pickRandom(filterDrills("spielform", focus), 2)
+      });
+
+      blocks.push({
+        key: "abschluss",
+        label: "Abschlussspiel",
+        minutes: abschluss,
+        drills: pickRandom(filterDrills("abschluss", focus), 1)
+      });
 
       if (athletik > 0) {
-        blocks.push({ key: "athletik", label: "Athletik / Stabi", minutes: athletik });
+        blocks.push({
+          key: "athletik",
+          label: "Athletik / Stabi",
+          minutes: athletik,
+          drills: pickRandom(filterDrills("athletik", focus), 1)
+        });
       }
 
       return blocks;
     }
 
     function formatAgeGroup(v) {
-      return {u8u9:"U8/U9",u10u11:"U10/U11",u12u13:"U12/U13",u14plus:"U14+"}[v];
+      return {u8u9:"U8/U9",u10u11:"U10/U11",u12u13:"U12/U13",u14plus:"U14+"}[v] || v;
     }
+
     function formatFocus(v) {
       return {
-        technik:"Technik & Dribbling",passspiel:"Passspiel",
-        abschluss:"Torabschluss",spielform:"Spielformen",
-        athletik:"Athletik",gemischt:"Gemischt"
-      }[v];
+        technik:"Technik & Dribbling",
+        passspiel:"Passspiel & Kombination",
+        abschluss:"Torabschluss",
+        spielform:"Spielformen & Taktik",
+        athletik:"Athletik & Koordination",
+        gemischt:"Gemischt (Allround)"
+      }[v] || v;
     }
-    function formatIntensity(v){return {locker:"locker",mittel:"mittel",hoch:"hoch"}[v];}
+
+    function formatIntensity(v){
+      return {locker:"locker",mittel:"mittel",hoch:"hoch"}[v] || v;
+    }
 
     const generateButton = document.getElementById("generateButton");
     const planOutput = document.getElementById("planOutput");
     const outputMeta = document.getElementById("outputMeta");
     const chipRow = document.getElementById("chipRow");
     const copyButton = document.getElementById("copyButton");
+
     let lastPlanText = "";
 
     function buildTextPlan(meta, blocks) {
@@ -597,133 +797,152 @@
 
       blocks.forEach((b,i)=>{
         lines.push(`${i+1}. ${b.label} (${b.minutes} Min)`);
-        lines.push("   -> Eigene Übungen aus easy2coach eintragen");
+        b.drills.forEach((d,j)=>{
+          lines.push(`   ${String.fromCharCode(97 + j)}) ${d.title}`);
+          lines.push(`      ${d.description}`);
+        });
         lines.push("");
       });
 
-      lines.push("Übungen: https://www.easy2coach.net/de/fussball-uebungsdatenbank_pre.html");
+      lines.push("Weitere Varianten mit Bildern/Grafiken: easy2coach Übungsdatenbank (https://www.easy2coach.net/de/fussball-uebungsdatenbank_pre.html)");
 
       return lines.join("\n");
     }
 
-    function renderPlan(meta, blocks, focusRaw) {
+    function renderPlan(meta, blocks) {
+      if (!blocks || !blocks.length) {
+        planOutput.innerHTML = '<div class="empty">Fehler beim Generieren des Plans.</div>';
+        return;
+      }
+
       outputMeta.textContent =
         `${meta.date} · ${meta.ageGroup} · ${meta.duration} Min · ${meta.focus}`;
-      chipRow.innerHTML="";
 
-      if(meta.intensity){
-        const c=document.createElement("span");
-        c.className="chip"; c.textContent=`Intensität: ${meta.intensity}`;
-        chipRow.appendChild(c);
+      chipRow.innerHTML = "";
+      const c1 = document.createElement("span");
+      c1.className = "chip";
+      c1.textContent = `Intensität: ${meta.intensity}`;
+      chipRow.appendChild(c1);
+
+      if (meta.players) {
+        const c2 = document.createElement("span");
+        c2.className = "chip";
+        c2.textContent = `Spieler: ~${meta.players}`;
+        chipRow.appendChild(c2);
       }
-      if(meta.players){
-        const c=document.createElement("span");
-        c.className="chip"; c.textContent=`Spieler: ~${meta.players}`;
-        chipRow.appendChild(c);
-      }
-      if(meta.note){
-        const c=document.createElement("span");
-        c.className="chip"; c.textContent=meta.note;
-        chipRow.appendChild(c);
+      if (meta.note) {
+        const c3 = document.createElement("span");
+        c3.className = "chip";
+        c3.textContent = meta.note;
+        chipRow.appendChild(c3);
       }
 
-      planOutput.innerHTML="";
+      planOutput.innerHTML = "";
 
-      blocks.forEach(block=>{
-        const section=document.createElement("div");
-        section.className="section";
+      blocks.forEach(block => {
+        const section = document.createElement("div");
+        section.className = "section";
 
-        const header=document.createElement("div");
-        header.className="section-header";
+        const header = document.createElement("div");
+        header.className = "section-header";
 
-        const t=document.createElement("div");
-        t.className="section-title";
-        t.textContent=block.label;
+        const stitle = document.createElement("div");
+        stitle.className = "section-title";
+        stitle.textContent = block.label;
 
-        const tm=document.createElement("div");
-        tm.className="section-time";
-        tm.textContent=`${block.minutes} Min`;
+        const stime = document.createElement("div");
+        stime.className = "section-time";
+        stime.textContent = `${block.minutes} Min`;
 
-        header.appendChild(t);
-        header.appendChild(tm);
+        header.appendChild(stitle);
+        header.appendChild(stime);
         section.appendChild(header);
 
-        const ex=document.createElement("div");
-        ex.className="exercise";
+        block.drills.forEach(drill => {
+          const ex = document.createElement("div");
+          ex.className = "exercise";
 
-        const title=document.createElement("div");
-        title.className="exercise-title";
-        title.textContent="Eigene Übungen eintragen";
+          const title = document.createElement("div");
+          title.className = "exercise-title";
+          title.textContent = drill.title;
 
-        const desc=document.createElement("div");
-        desc.className="exercise-details";
-        desc.textContent=`2–3 Übungen passend zum Schwerpunkt "${meta.focus}" auswählen.`;
+          const details = document.createElement("div");
+          details.className = "exercise-details";
+          details.textContent = drill.description;
 
-        ex.appendChild(title);
-        ex.appendChild(desc);
+          ex.appendChild(title);
+          ex.appendChild(details);
 
-        const footer=document.createElement("div");
-        footer.className="exercise-footer";
+          const footer = document.createElement("div");
+          footer.className = "exercise-footer";
 
-        const url=getE2CUrl(focusRaw);
-        const link=document.createElement("a");
-        link.className="exercise-link";
-        link.href=url;
-        link.target="_blank";
-        link.innerHTML='<span class="icon">🖼️</span><span>Übungen auf easy2coach</span>';
+          const url = getE2CUrlForDrill(drill);
+          const link = document.createElement("a");
+          link.className = "exercise-link";
+          link.href = url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.innerHTML = '<span class="icon">🖼️</span><span>Übungen auf easy2coach</span>';
 
-        const src=document.createElement("span");
-        src.className="exercise-source";
-        src.textContent="Öffnet die easy2coach Übungsdatenbank.";
+          const src = document.createElement("span");
+          src.className = "exercise-source";
+          src.textContent = "Öffnet die easy2coach-Übungsdatenbank mit passenden Übungen.";
 
-        footer.appendChild(link);
-        footer.appendChild(src);
-        ex.appendChild(footer);
+          footer.appendChild(link);
+          footer.appendChild(src);
+          ex.appendChild(footer);
 
-        section.appendChild(ex);
+          section.appendChild(ex);
+        });
+
         planOutput.appendChild(section);
       });
 
       lastPlanText = buildTextPlan(meta, blocks);
     }
 
-    generateButton.addEventListener("click", ()=> {
-      const age=document.getElementById("ageGroup").value;
-      const dur=parseInt(document.getElementById("duration").value);
-      const focusRaw=document.getElementById("focus").value;
-      const intensity=document.getElementById("intensity").value;
-      const players=document.getElementById("players").value.trim();
-      const note=document.getElementById("note").value.trim();
-      const trainer=localStorage.getItem("kaplan_trainer_name")||"";
+    generateButton.addEventListener("click", () => {
+      const age = document.getElementById("ageGroup").value;
+      const dur = document.getElementById("duration").value;
+      const focus = document.getElementById("focus").value;
+      const intensity = document.getElementById("intensity").value;
+      const players = document.getElementById("players").value.trim();
+      const note = document.getElementById("note").value.trim();
+      const trainer = localStorage.getItem("kaplan_trainer_name") || "";
 
-      const now=new Date();
-      const dateStr=now.toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"});
+      const now = new Date();
+      const dateStr = now.toLocaleDateString("de-DE", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
 
-      const meta={
-        date:dateStr,
-        ageGroup:formatAgeGroup(age),
-        duration:dur,
-        focus:formatFocus(focusRaw),
-        intensity:formatIntensity(intensity),
-        players:players||"",
-        note:note||"",
-        trainer:trainer||""
+      const meta = {
+        date: dateStr,
+        ageGroup: formatAgeGroup(age),
+        duration: Number(dur),
+        focus: formatFocus(focus),
+        intensity: formatIntensity(intensity),
+        players: players || "",
+        note: note || "",
+        trainer: trainer || ""
       };
 
-      const blocks=buildPlanStructure(dur, focusRaw, intensity);
-      renderPlan(meta, blocks, focusRaw);
+      const blocks = buildPlanStructure(dur, focus, intensity);
+      renderPlan(meta, blocks);
     });
 
-    copyButton.addEventListener("click", async ()=>{
-      if(!lastPlanText){
+    copyButton.addEventListener("click", async () => {
+      if (!lastPlanText) {
         alert("Bitte erst einen Plan erstellen.");
         return;
       }
-      try{
+      try {
         await navigator.clipboard.writeText(lastPlanText);
-        alert("Plan kopiert!");
-      }catch{
-        alert("Kopieren nicht möglich.");
+        alert("Plan in die Zwischenablage kopiert.");
+      } catch {
+        alert("Kopieren nicht möglich – bitte Text manuell markieren.");
       }
     });
   </script>
