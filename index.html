@@ -353,7 +353,7 @@
 
     .exercise {
       font-size: 11px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .exercise-title {
@@ -364,6 +364,37 @@
     .exercise-details {
       color: var(--text-soft);
       line-height: 1.35;
+    }
+
+    .exercise-footer {
+      margin-top: 3px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      align-items: center;
+    }
+
+    .exercise-link {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.96);
+      color: #e5e7eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .exercise-link span.icon {
+      font-size: 12px;
+    }
+
+    .exercise-source {
+      font-size: 9px;
+      color: var(--text-soft);
+      opacity: 0.9;
     }
 
     .small {
@@ -483,19 +514,19 @@
 
         <div class="output-body" id="planOutput">
           <div class="empty">
-            Erstelle zuerst einen Plan – dann siehst du hier die Einheiten, fein sortiert nach Minuten und Schwerpunkten.
+            Erstelle zuerst einen Plan – dann siehst du hier die Einheiten, mit Links zu Bildern/Videos.
           </div>
         </div>
       </section>
 
       <p class="small">
-        Tipp: Du kannst den kopierten Plan direkt in WhatsApp, Notizen oder Word/Excel einfügen – z.B. für Co-Trainer oder Eltern.
+        Tipp: Der kopierte Plan enthält auch die Übungsnamen. Die Links zu Bildern/Videos findest du direkt hier in der App.
       </p>
     </div>
   </div>
 
   <script>
-    // --- Trainername in localStorage merken ---
+    // --- Trainername merken ---
     const trainerButton = document.getElementById('trainerButton');
     const trainerNameLabel = document.getElementById('trainerNameLabel');
 
@@ -521,9 +552,9 @@
 
     loadTrainerName();
 
-    // --- "Datenbank" mit Übungen (einfach erweiterbar) ---
-    // Jede Übung: section (warmup, technik, spielform, abschluss, athletik)
-    // focusTags: ['technik','passspiel','abschluss','spielform','athletik','gemischt']
+    // --- "Datenbank" mit Übungen + Links ---
+    // link: Seite mit Bild / Video
+    // source: z.B. "DFB", "Coerver", "Funino" usw.
     const DRILLS = [
       // Warm-Up
       {
@@ -531,28 +562,36 @@
         title: 'Lauf-ABC & Mobilisation',
         minutes: 8,
         focusTags: ['gemischt', 'athletik'],
-        description: 'Locker einlaufen, anschließend Kniehebelauf, Anfersen, Seitgalopp, Ausfallschritte, Armkreisen. Letzte 2 Min. mit Ball am Fuß.'
+        description: 'Locker einlaufen, anschließend Kniehebelauf, Anfersen, Seitgalopp, Ausfallschritte, Armkreisen. Letzte 2 Min. mit Ball am Fuß.',
+        link: 'https://training-service.fussball.de/fileadmin/_dfbdam/90318-380-ue20-te.pdf',
+        source: 'DFB – Lauf-ABC & Dribbling'
       },
       {
         section: 'warmup',
         title: 'Fangen mit Ball (Jäger & Hasen)',
         minutes: 10,
         focusTags: ['technik', 'gemischt'],
-        description: 'Jeder Spieler mit Ball im Feld, 1–2 Fänger ohne Ball. Fänger markieren durch Leibchen. Wer gefangen wird, macht 3 schnelle Kontakte um eine Hütcheninsel und ist wieder frei.'
+        description: 'Jeder Spieler mit Ball im Feld, 1–2 Fänger ohne Ball. Fänger markieren durch Leibchen. Wer gefangen wird, macht 3 schnelle Kontakte um eine Hütcheninsel und ist wieder frei.',
+        link: '',
+        source: 'eigene Variation Kinderfußball'
       },
       {
         section: 'warmup',
         title: 'Dribbel-Slalom im Parcours',
         minutes: 10,
         focusTags: ['technik'],
-        description: 'Mehrere Slalomlinien mit Hütchen aufbauen. Spieler dribbeln mit vielen Kontakten, Richtungswechseln, beidfüßig. Auf Trainerkommando Richtungswechsel oder Tempoverschärfung.'
+        description: 'Mehrere Slalomlinien mit Hütchen aufbauen. Spieler dribbeln mit vielen Kontakten, Richtungswechseln, beidfüßig. Auf Trainerkommando Richtungswechsel oder Tempoverschärfung.',
+        link: 'https://www.dfb.de/fileadmin/_dfbdam/3356-305-ba-au1-01.pdf',
+        source: 'DFB – Dreiecks-Dribbeln (ähnliche Form)'
       },
       {
         section: 'warmup',
         title: 'Kettenfang mit Ball',
         minutes: 8,
         focusTags: ['athletik', 'gemischt'],
-        description: '2 Spieler fangen, halten sich an der Hand (Kette). Alle anderen haben Ball und versuchen auszuweichen. Gefangene werden Teil der Kette. Kurze Belastung, dann wechseln.'
+        description: '2 Spieler fangen, halten sich an der Hand (Kette). Alle anderen haben Ball und versuchen auszuweichen. Gefangene werden Teil der Kette. Kurze Belastung, dann wechseln.',
+        link: '',
+        source: 'klassisches Aufwärmspiel'
       },
 
       // Technik / Passspiel
@@ -561,28 +600,36 @@
         title: 'Coerver-Basics (1-gegen-Kegel)',
         minutes: 12,
         focusTags: ['technik'],
-        description: 'In 2–3 Reihen: Coerver-Moves (Innen-Außen, Sohlenzieher, Übersteiger) gegen Hütchen. Erst ohne Tempo, dann mit Richtungswechsel und Tempoverschärfung. Viele Wiederholungen, beidfüßig.'
+        description: 'In 2–3 Reihen: Coerver-Moves (Innen-Außen, Sohlenzieher, Übersteiger) gegen Hütchen. Erst ohne Tempo, dann mit Richtungswechsel und Tempoverschärfung. Viele Wiederholungen, beidfüßig.',
+        link: 'https://www.youtube.com/watch?v=jW8zbVX-RA4',
+        source: 'Coerver Coaching – Ball Mastery Video'
       },
       {
         section: 'technik',
         title: 'Quadrat-Passspiel (Rondo 4v1 / 5v2)',
         minutes: 12,
         focusTags: ['passspiel', 'technik'],
-        description: 'Quadrate 12–15 m, außen 4–5 Spieler, innen 1–2 Verteidiger. Max. 2 Kontakte, flache Pässe, offener Körper. Punktesystem: 10 Pässe in Folge = 1 Punkt fürs Außenteam.'
+        description: 'Quadrate 12–15 m, außen 4–5 Spieler, innen 1–2 Verteidiger. Max. 2 Kontakte, flache Pässe, offener Körper. Punktesystem: 10 Pässe in Folge = 1 Punkt fürs Außenteam.',
+        link: 'https://soccerhandbook.com/coaching-training/what-is-a-rondo-in-soccer/',
+        source: 'Artikel zu Rondo-Varianten'
       },
       {
         section: 'technik',
         title: 'Doppelpass & Tiefenlauf',
         minutes: 10,
         focusTags: ['passspiel', 'abschluss'],
-        description: 'Aufbau: Passgeber – Wandspieler – Tiefenläufer. Pass – Klatsch – Steilpass in die Tiefe. Tiefenläufer nimmt mit und schließt auf Minitor ab. Seiten regelmäßig wechseln.'
+        description: 'Aufbau: Passgeber – Wandspieler – Tiefenläufer. Pass – Klatsch – Steilpass in die Tiefe. Tiefenläufer nimmt mit und schließt auf Minitor ab. Seiten regelmäßig wechseln.',
+        link: 'https://www.soccerxpert.com/drills/soccer-receiving-drills',
+        source: 'SoccerXpert – Pass-/Annahme-Drills (ähnlich)'
       },
       {
         section: 'technik',
         title: 'Torabschluss nach Dribbling',
         minutes: 12,
         focusTags: ['abschluss', 'technik'],
-        description: 'Spieler dribbeln aus leicht seitlicher Position Richtung Tor, machen 1 Finte (z.B. Übersteiger) und schließen mit Vollspann flach ab. Variation: Abschluss nach Auftaktbewegung in die Tiefe.'
+        description: 'Spieler dribbeln aus leicht seitlicher Position Richtung Tor, machen 1 Finte (z.B. Übersteiger) und schließen mit Vollspann flach ab. Variation: Abschluss nach Auftaktbewegung in die Tiefe.',
+        link: 'https://www.soccercoachingpro.com/finishing-drills/',
+        source: 'Finishing-Drills Übersicht'
       },
 
       // Spielformen
@@ -591,21 +638,27 @@
         title: '4-gegen-4 mit Zonen (Spielaufbau)',
         minutes: 15,
         focusTags: ['spielform', 'passspiel'],
-        description: 'Feld in 3 Zonen teilen (Aufbau – Mittelfeld – Angriff). In der ersten Phase muss der Ball durch jede Zone. Fördert Ballzirkulation und Raumaufteilung. Später Zonen freigeben.'
+        description: 'Feld in 3 Zonen teilen (Aufbau – Mittelfeld – Angriff). In der ersten Phase muss der Ball durch jede Zone. Fördert Ballzirkulation und Raumaufteilung. Später Zonen freigeben.',
+        link: 'https://www.dfb-akademie.de/trainingspraxis/-/id-11011534',
+        source: 'DFB Trainingspraxis – Spielformen im Funino-Feld'
       },
       {
         section: 'spielform',
         title: 'Überzahlspiel 3v2 / 4v3',
         minutes: 12,
         focusTags: ['spielform', 'abschluss'],
-        description: 'Angreifer starten in Überzahl aus dem Mittelfeld in Richtung Tor (mit Torwart). Ziel: schnell ausspielen, kluge Entscheidung Pass/Dribbling/Abschluss. Verteidiger wechseln nach jedem Angriff.'
+        description: 'Angreifer starten in Überzahl aus dem Mittelfeld in Richtung Tor (mit Torwart). Ziel: schnell ausspielen, kluge Entscheidung Pass/Dribbling/Abschluss. Verteidiger wechseln nach jedem Angriff.',
+        link: 'https://www.soccerdrive.com/drills/attacking',
+        source: 'SoccerDrive – Angriffs-/Überzahlspiele'
       },
       {
         section: 'spielform',
         title: 'Konter-Spiel 5v5 + Kontertore',
         minutes: 15,
         focusTags: ['spielform', 'athletik'],
-        description: 'Zwei Teams, Spielfeld länglich. Nach Ballgewinn sofort umschalten und auf 2 kleine Kontertore abschließen. Zeitlimit pro Angriff (z.B. 10 Sekunden), um Tempo hoch zu halten.'
+        description: 'Zwei Teams, Spielfeld länglich. Nach Ballgewinn sofort umschalten und auf 2 kleine Kontertore abschließen. Zeitlimit pro Angriff (z.B. 10 Sekunden), um Tempo hoch zu halten.',
+        link: '',
+        source: 'eigene Spielform (Konterfokus)'
       },
 
       // Abschlussspiel
@@ -614,21 +667,27 @@
         title: 'Freies Spiel 6-gegen-6 (mit Coaching-Ziel)',
         minutes: 18,
         focusTags: ['gemischt', 'spielform'],
-        description: 'Normales Spiel mit klar definiertem Coaching-Ziel (z.B. „Breite halten“, „Spielverlagerung“, „Abschluss nach 3 Pässen“). Nach jeweils 6 Min. kurze Freeze-Phase und Feedback.'
+        description: 'Normales Spiel mit klar definiertem Coaching-Ziel (z.B. „Breite halten“, „Spielverlagerung“, „Abschluss nach 3 Pässen“). Nach jeweils 6 Min. kurze Freeze-Phase und Feedback.',
+        link: '',
+        source: 'Standard-Spiel, eigenes Coaching'
       },
       {
         section: 'abschluss',
         title: 'Funino 3-gegen-3 auf 4 Tore',
         minutes: 16,
         focusTags: ['technik', 'abschluss'],
-        description: 'Kleine Felder, 4 Minitore. Tore zählen nur, wenn über Außenzone vorbereitet. Fördert 1-gegen-1, Mut zum Dribbling und schnelles Umschalten. Häufige Teamwechsel.'
+        description: 'Kleine Felder, 4 Minitore. Tore zählen nur, wenn über Außenzone vorbereitet. Fördert 1-gegen-1, Mut zum Dribbling und schnelles Umschalten. Häufige Teamwechsel.',
+        link: 'https://kickplan.de/de/portal/campus/seite/fussballspiel-3-gegen-3-auf-4-minitore-funino',
+        source: 'Funino-Beschreibung & Grafik'
       },
       {
         section: 'abschluss',
         title: 'Champions-League-Turnier',
         minutes: 18,
         focusTags: ['gemischt', 'spielform'],
-        description: '3–4 Teams à 3–5 Spieler. Kurze Spiele (z.B. 5 Min.), Sieg = 3 Punkte. Optional Bonuspunkte für Coaching-Ziele (z.B. 3 Pässe in Folge, Ballgewinn im Pressing).'
+        description: '3–4 Teams à 3–5 Spieler. Kurze Spiele (z.B. 5 Min.), Sieg = 3 Punkte. Optional Bonuspunkte für Coaching-Ziele (z.B. 3 Pässe in Folge, Ballgewinn im Pressing).',
+        link: '',
+        source: 'Turnierform, frei kombinierbar'
       },
 
       // Athletik / Koordination
@@ -637,21 +696,27 @@
         title: 'Koordinationsleiter & Hütchen-Sprints',
         minutes: 10,
         focusTags: ['athletik'],
-        description: 'Stationen mit Leiter (beidbeinig, einbeinig, seitlich) und kurzen Sprints (5–10 m). Belastung kurz, Pausen einbauen. Technik sauber, Qualität vor Tempo.'
+        description: 'Stationen mit Leiter (beidbeinig, einbeinig, seitlich) und kurzen Sprints (5–10 m). Belastung kurz, Pausen einbauen. Technik sauber, Qualität vor Tempo.',
+        link: 'https://training-service.fussball.de/fileadmin/_dfbdam/246937-498-a-au2-01.pdf',
+        source: 'DFB – Lauf-ABC mit Richtungswechsel'
       },
       {
         section: 'athletik',
         title: 'Stabi-Zirkel (Rumpf & Beine)',
         minutes: 10,
         focusTags: ['athletik'],
-        description: '4–5 Stationen: Unterarmstütz, Seitstütz, Kniebeugen, Ausfallschritte, Sprung-Landungen. 30–40 Sek. Belastung, 20 Sek. Pause, 2–3 Runden – altersgerecht dosieren.'
+        description: '4–5 Stationen: Unterarmstütz, Seitstütz, Kniebeugen, Ausfallschritte, Sprung-Landungen. 30–40 Sek. Belastung, 20 Sek. Pause, 2–3 Runden – altersgerecht dosieren.',
+        link: '',
+        source: 'Standard-Stabi aus Athletiktraining'
       },
       {
         section: 'athletik',
         title: 'Sprint-Wettkämpfe mit Ball',
         minutes: 8,
         focusTags: ['athletik', 'technik'],
-        description: '1-gegen-1 oder 2-gegen-2 Sprints mit Ball zu Minitoren oder Linien. Fokus auf saubere Antritte, Körperposition und Ballkontrolle bei Tempo.'
+        description: '1-gegen-1 oder 2-gegen-2 Sprints mit Ball zu Minitoren oder Linien. Fokus auf saubere Antritte, Körperposition und Ballkontrolle bei Tempo.',
+        link: 'https://www.sport-thieme.de/magazin/trainingsplaene/athletiktraining',
+        source: 'Sport-Thieme – Athletiktraining Fußball'
       }
     ];
 
@@ -673,7 +738,6 @@
     }
 
     function buildPlanStructure(duration, focus, intensity) {
-      // Grobe Zeitaufteilung je nach Dauer (in Minuten)
       let warmup, technik, spielform, abschluss, athletik = 0;
 
       if (duration === 60) {
@@ -689,7 +753,6 @@
         abschluss = 18;
         athletik = intensity === 'hoch' ? 7 : intensity === 'mittel' ? 5 : 0;
       } else {
-        // 90
         warmup = 15;
         technik = 20;
         spielform = 25;
@@ -697,10 +760,8 @@
         athletik = intensity === 'hoch' ? 10 : intensity === 'mittel' ? 8 : 5;
       }
 
-      // Anzahl Übungen pro Block grob steuern
       const plan = [];
 
-      // Warm-Up
       plan.push({
         key: 'warmup',
         label: 'Warm-Up',
@@ -708,7 +769,6 @@
         drills: pickRandom(filterDrills('warmup', focus), 2)
       });
 
-      // Technik
       plan.push({
         key: 'technik',
         label: 'Technik / Schulung',
@@ -716,7 +776,6 @@
         drills: pickRandom(filterDrills('technik', focus), 2)
       });
 
-      // Spielform
       plan.push({
         key: 'spielform',
         label: 'Spielformen / Anwendung',
@@ -724,7 +783,6 @@
         drills: pickRandom(filterDrills('spielform', focus), 2)
       });
 
-      // Abschlussspiel
       plan.push({
         key: 'abschluss',
         label: 'Abschlussspiel',
@@ -797,6 +855,9 @@
         b.drills.forEach((d, i) => {
           lines.push(`   ${String.fromCharCode(97 + i)}) ${d.title}`);
           lines.push(`      ${d.description}`);
+          if (d.source) {
+            lines.push(`      Quelle: ${d.source}`);
+          }
         });
         lines.push('');
       });
@@ -809,7 +870,6 @@
         return;
       }
 
-      // Meta
       outputMeta.textContent =
         `${meta.date} · ${meta.ageGroup} · ${meta.duration} Min · ${meta.focus}`;
       chipRow.innerHTML = '';
@@ -833,7 +893,6 @@
         chipRow.appendChild(chip3);
       }
 
-      // Body
       planOutput.innerHTML = '';
       blocks.forEach(block => {
         const section = document.createElement('div');
@@ -868,6 +927,31 @@
 
           ex.appendChild(exTitle);
           ex.appendChild(exDetails);
+
+          const footer = document.createElement('div');
+          footer.className = 'exercise-footer';
+
+          if (drill.link) {
+            const link = document.createElement('a');
+            link.className = 'exercise-link';
+            link.href = drill.link;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.innerHTML = '<span class="icon">🖼️</span><span>Bild / Video</span>';
+            footer.appendChild(link);
+          }
+
+          if (drill.source) {
+            const src = document.createElement('span');
+            src.className = 'exercise-source';
+            src.textContent = `Quelle: ${drill.source}`;
+            footer.appendChild(src);
+          }
+
+          if (footer.childNodes.length > 0) {
+            ex.appendChild(footer);
+          }
+
           section.appendChild(ex);
         });
 
@@ -919,7 +1003,6 @@
           await navigator.clipboard.writeText(lastPlanText);
           alert('Trainingsplan in die Zwischenablage kopiert. Du kannst ihn jetzt in WhatsApp, Notizen, Word etc. einfügen.');
         } else {
-          // Fallback: Text markieren
           const temp = document.createElement('textarea');
           temp.value = lastPlanText;
           document.body.appendChild(temp);
